@@ -17,7 +17,7 @@
     width: calc(100% - 20px);
     box-sizing: border-box;
     text-align: right;
-    margin-bottom: 14px;
+    margin-bottom: 14px; margin-top: 12px;
   }
   #result {
     font-size: 28px;
@@ -39,9 +39,9 @@
     background: #eee;
   }
   button:active { background: #ccc; }
-  .clear { grid-column: 1 / 4; }
 </style>
 <script>
+var pg = 'A';
 function press(c) {
   let s = document.getElementById('input').value;
 
@@ -52,6 +52,13 @@ function press(c) {
     if (s === '-') s = '0';
   } else if (c === '.') {
     if (!s.includes('.')) s += '.';
+  } else if (c === '<') {
+    pg = 'A';
+  } else if (c === '>') {
+    pg = 'B';
+  } else if (c==='-') {
+    if (s !== '0')
+      if( s[0]==='-') s = s.slice(1,0); else s = '-'+s;
   } else {
     if (s === '0') s = c;
     else s += c;
@@ -61,10 +68,14 @@ function press(c) {
   calculate();
 }
 
-function calculate() {
+function calculate()
+{
   const n = Number(document.getElementById('input').value);
-  document.getElementById('result').textContent =
-    Number.isFinite(n) ? (n + n) : '—';
+  if(!Number.isFinite(n)) return;
+  var r = pg==='A' ? ('2*'+n + ' | ' + (2*n) + '\n' +
+                      '3*'+n + ' | ' + (3*n))
+                   : ('10*'+n + ' | ' + (10*n) + '<br>' + '100*'+n + ' | ' + (100*n));
+  document.getElementById('result').textContent = r;
 }
 
 window.onload = calculate;
@@ -86,8 +97,11 @@ window.onload = calculate;
     <button onclick="press('9')">9</button>
     <button onclick="press('.')">.</button>
     <button onclick="press('0')">0</button>
+    <button onclick="press('-')">-</button>
+    <button onclick="press('C')">C</button>
+    <button onclick="press('<')">A</button>
+    <button onclick="press('>')">B</button>
     <button onclick="press('B')">⌫</button>
-    <button class="clear" onclick="press('C')">Clear</button>
   </div>
 </body>
 </html>
