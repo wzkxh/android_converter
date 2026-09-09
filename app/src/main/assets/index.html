@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Super Converter</title>
+<style>
+  body {
+    margin: 0;
+    padding: 16px;
+    font-family: sans-serif;
+    text-align: center;
+    background: #fafafa;
+  }
+  #input {
+    font-size: 32px;
+    padding: 8px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    text-align: right;
+    margin-bottom: 14px;
+  }
+  #result {
+    font-size: 28px;
+    margin: 16px 0 20px;
+    min-height: 40px;
+  }
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 420px;
+    margin: auto;
+  }
+  button {
+    font-size: 24px;
+    min-height: 58px;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    background: #eee;
+  }
+  button:active { background: #ccc; }
+  .clear { grid-column: 1 / 4; }
+</style>
+<script>
+function press(c) {
+  let s = document.getElementById('input').value;
+
+  if (c === 'C') {
+    s = '0';
+  } else if (c === 'B') {
+    s = s.length > 1 ? s.slice(0, -1) : '0';
+    if (s === '-') s = '0';
+  } else if (c === '.') {
+    if (!s.includes('.')) s += '.';
+  } else {
+    if (s === '0') s = c;
+    else s += c;
+  }
+
+  document.getElementById('input').value = s;
+  calculate();
+}
+
+function calculate() {
+  const n = Number(document.getElementById('input').value);
+  document.getElementById('result').textContent =
+    Number.isFinite(n) ? (n + n) : '—';
+}
+
+window.onload = calculate;
+</script>
+</head>
+<body>
+  <input id="input" value="2" inputmode="none" readonly>
+  <div id="result">4</div>
+
+  <div class="keys">
+    <button onclick="press('1')">1</button>
+    <button onclick="press('2')">2</button>
+    <button onclick="press('3')">3</button>
+    <button onclick="press('4')">4</button>
+    <button onclick="press('5')">5</button>
+    <button onclick="press('6')">6</button>
+    <button onclick="press('7')">7</button>
+    <button onclick="press('8')">8</button>
+    <button onclick="press('9')">9</button>
+    <button onclick="press('.')">.</button>
+    <button onclick="press('0')">0</button>
+    <button onclick="press('B')">⌫</button>
+    <button class="clear" onclick="press('C')">Clear</button>
+  </div>
+</body>
+</html>
