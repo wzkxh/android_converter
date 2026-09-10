@@ -69,20 +69,20 @@ function calculate()
   let oz2ml= (nabs<33.8140222) ? ((n*29.57353).toPrecision(LL) + ' ml') : ((n*0.02957353).toPrecision(LL) + ' l');
   if(pg==='a')
   {
-    ge('r1c1').textContent = n + ' В°F в†’ ' + ((n-32)/1.8).toPrecision(LL) + ' В°C';
-    ge('r1c2').textContent = n + ' В°C в†’ ' + (n*1.8+32).toPrecision(LL) + ' В°F';
-    ge('r2c1').textContent = n + ' lb в†’ ' + (n*0.45359237).toPrecision(LL) + ' kg';
-    ge('r2c2').textContent = n + ' kg в†’ ' + (n/0.45359237).toPrecision(LL) + ' lb';
-    ge('r3c1').textContent = n + ' oz в†’ ' + oz2g;
-    ge('r3c2').textContent = n + ' g  в†’ ' + (n/28.349523).toPrecision(LL) + ' oz';
-    ge('r4c1').textContent = n + ' mi в†’ ' + (n*1.609344).toPrecision(LL) + ' km';
-    ge('r4c2').textContent = n + ' km в†’ ' + (n/1.609344).toPrecision(LL) + ' mi';
-    ge('r5c1').textContent = n + ' km в†’ ' + (n/1.609344).toPrecision(LL) + ' mi';
-    ge('r5c2').textContent = n + ' cm в†’ ' + (n/2.54).toPrecision(LL) + ' in';
-    ge('r6c1').textContent = n + ' ft в†’ ' + (n*0.3048).toPrecision(LL) + ' m';
-    ge('r6c2').textContent = n + ' m  в†’ ' + (n/0.3048).toPrecision(LL) + ' ft';
-    ge('r7c1').textContent = n + ' yd в†’ ' + (n*0.9144).toPrecision(LL) + ' m';
-    ge('r7c2').textContent = n + ' m  в†’ ' + (n/0.9144).toPrecision(LL) + ' yd';
+    ge('r1c1').textContent = n + ' °F → ' + ((n-32)/1.8).toPrecision(LL) + ' °C';
+    ge('r1c2').textContent = n + ' °C → ' + (n*1.8+32).toPrecision(LL) + ' °F';
+    ge('r2c1').textContent = n + ' lb → ' + (n*0.45359237).toPrecision(LL) + ' kg';
+    ge('r2c2').textContent = n + ' kg → ' + (n/0.45359237).toPrecision(LL) + ' lb';
+    ge('r3c1').textContent = n + ' oz → ' + oz2g;
+    ge('r3c2').textContent = n + ' g  → ' + (n/28.349523).toPrecision(LL) + ' oz';
+    ge('r4c1').textContent = n + ' mi → ' + (n*1.609344).toPrecision(LL) + ' km';
+    ge('r4c2').textContent = n + ' km → ' + (n/1.609344).toPrecision(LL) + ' mi';
+    ge('r5c1').textContent = n + ' km → ' + (n/1.609344).toPrecision(LL) + ' mi';
+    ge('r5c2').textContent = n + ' cm → ' + (n/2.54).toPrecision(LL) + ' in';
+    ge('r6c1').textContent = n + ' ft → ' + (n*0.3048).toPrecision(LL) + ' m';
+    ge('r6c2').textContent = n + ' m  → ' + (n/0.3048).toPrecision(LL) + ' ft';
+    ge('r7c1').textContent = n + ' yd → ' + (n*0.9144).toPrecision(LL) + ' m';
+    ge('r7c2').textContent = n + ' m  → ' + (n/0.9144).toPrecision(LL) + ' yd';
 
   }
   else
@@ -159,7 +159,7 @@ window.onload = calculate;
     <button onclick="press('0')">0</button>
     <button class="gray" onclick="press('.')">.</button>
     <button class="gray" onclick="press('-')">/-/</button>
-    <button class="blue" onclick="press('B')">вЊ«</button>
+    <button class="blue" onclick="press('B')">⌫</button>
   </div>
 </body>
 </html>
