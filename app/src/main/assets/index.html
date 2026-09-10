@@ -4,104 +4,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Super Converter</title>
 <style>
-  body {
-    margin: 0;
-    padding: 16px;
-    font-family: sans-serif;
-    text-align: center;
-    background: #fafafa;
-  }
-  #input {
-    font-size: 32px;
-    padding: 8px;
-    width: calc(100% - 20px);
-    box-sizing: border-box;
-    text-align: right;
-    margin-bottom: 14px; margin-top: 12px;
-  }
-  #result {
-    font-size: 28px;
-    margin: 16px 0 20px;
-    min-height: 40px;
-  }
-  .keys {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    max-width: 420px;
-    margin: auto;
-  }
-  button {
-    font-size: 24px;
-    min-height: 58px;
-    border: 1px solid #aaa;
-    border-radius: 8px;
-    background: #eee;
-  }
+  body { margin: 0; padding: 16px; font-family: sans-serif; text-align: center; background: #fafafa; }
+  #result { font-size: 28px; margin: 16px 0 20px; text-align: center; min-height: 100px; }
+  table { margin-left: auto; margin-right: auto; border-collapse: collapse;
+    width: calc(100% - 20px); table-layout: fixed; }
+  table, th, td { border: 1px solid black; }
+  th, td { width: 50%; }
+  #input { font-size: 32px; padding: 8px; width: calc(100% - 20px);
+    box-sizing: border-box; text-align: center; margin-bottom: 14px; }
+  .keys { display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; max-width: 420px; margin: auto; }
+  button { font-size: 24px; min-height: 58px; background: #eee;
+    border: 1px solid #aaa; border-radius: 8px; }
+  .blue { background: #eef; }
+  .gray { background: #ddd; }
   button:active { background: #ccc; }
 </style>
 <script>
-var pg = 'A';
-function press(c) {
+var pg = 'a';
+
+function press(c)
+{
   let s = document.getElementById('input').value;
-
-  if (c === 'C') {
-    s = '0';
-  } else if (c === 'B') {
-    s = s.length > 1 ? s.slice(0, -1) : '0';
-    if (s === '-') s = '0';
-  } else if (c === '.') {
-    if (!s.includes('.')) s += '.';
-  } else if (c === '<') {
-    pg = 'A';
-  } else if (c === '>') {
-    pg = 'B';
-  } else if (c==='-') {
-    if (s !== '0')
-      if( s[0]==='-') s = s.slice(1,0); else s = '-'+s;
-  } else {
-    if (s === '0') s = c;
-    else s += c;
-  }
-
+  if(c === 'C') { s = '0'; }
+  else if (c === 'B') { s = s.length > 1 ? s.slice(0,-1) : '0'; if(s==='-') s='0'; }
+  else if(c==='.') { if (!s.includes('.')) s += '.'; }
+  else if(c==='a') { pg = 'a'; }
+  else if(c==='b') { pg = 'b'; }
+  else if(c==='-') { if (s !== '0') { if( s[0]==='-') s = s.slice(1); else s = '-'+s; } }
+  else { if(s==='0') s = c; else s += c; }
   document.getElementById('input').value = s;
   calculate();
 }
 
+function do_calc(x,pg)
+{
+  let a = [];
+  let b = [];
+  a.push((x-32)/1.8); b.push(x*1.8+32);
+  a.push(x*0.4536);   b.push(x/0.4536);
+  a.push(x*28.35);    b.push(x/28.35);
+  a.push(x*1.609);    b.push(x/1.609);
+  a.push(x*0.3048);   b.push(pg==='a'?1:2/*x/0.3048*/);
+  return [a,b];
+}
+
+function ge(x) { return document.getElementById(x); }
+var curr_pg = '';
 function calculate()
 {
-  const n = Number(document.getElementById('input').value);
+  const x = document.getElementById('input').value;
+  const n = Number(x);
   if(!Number.isFinite(n)) return;
-  var r = pg==='A' ? ('2*'+n + ' | ' + (2*n) + '\n' +
-                      '3*'+n + ' | ' + (3*n))
-                   : ('10*'+n + ' | ' + (10*n) + '<br>' + '100*'+n + ' | ' + (100*n));
-  document.getElementById('result').textContent = r;
+  let L=x.length;
+  if(x.indexOf('.')>=0) L-=1;
+  if(x.substr(0,1)=='-'||x.substr(0,1)=='+') L-=1;
+  let LL=Math.min(L+1,15);
+  let L2=Math.min(L*2,15);
+  let [a,b] = do_calc(n,pg);
+  let nabs = Math.abs(n);
+  let nint = Math.floor(nabs);
+  let oz2g = (nabs<35.2739621) ? ((n*28.349523).toPrecision(LL) + ' g') : ((n*0.028349523).toPrecision(LL) + ' kg');
+  let oz2ml= (nabs<33.8140222) ? ((n*29.57353).toPrecision(LL) + ' ml') : ((n*0.02957353).toPrecision(LL) + ' l');
+  if(pg==='a')
+  {
+    ge('r1c1').textContent = n + ' В°F в†’ ' + ((n-32)/1.8).toPrecision(LL) + ' В°C';
+    ge('r1c2').textContent = n + ' В°C в†’ ' + (n*1.8+32).toPrecision(LL) + ' В°F';
+    ge('r2c1').textContent = n + ' lb в†’ ' + (n*0.45359237).toPrecision(LL) + ' kg';
+    ge('r2c2').textContent = n + ' kg в†’ ' + (n/0.45359237).toPrecision(LL) + ' lb';
+    ge('r3c1').textContent = n + ' oz в†’ ' + oz2g;
+    ge('r3c2').textContent = n + ' g  в†’ ' + (n/28.349523).toPrecision(LL) + ' oz';
+    ge('r4c1').textContent = n + ' mi в†’ ' + (n*1.609344).toPrecision(LL) + ' km';
+    ge('r4c2').textContent = n + ' km в†’ ' + (n/1.609344).toPrecision(LL) + ' mi';
+    ge('r5c1').textContent = n + ' km в†’ ' + (n/1.609344).toPrecision(LL) + ' mi';
+    ge('r5c2').textContent = n + ' cm в†’ ' + (n/2.54).toPrecision(LL) + ' in';
+    ge('r6c1').textContent = n + ' ft в†’ ' + (n*0.3048).toPrecision(LL) + ' m';
+    ge('r6c2').textContent = n + ' m  в†’ ' + (n/0.3048).toPrecision(LL) + ' ft';
+    ge('r7c1').textContent = n + ' yd в†’ ' + (n*0.9144).toPrecision(LL) + ' m';
+    ge('r7c2').textContent = n + ' m  в†’ ' + (n/0.9144).toPrecision(LL) + ' yd';
+
+  }
+  else
+  {
+    document.getElementById('r1c1').textContent = -a[0];
+    document.getElementById('r1c2').textContent = -b[0];
+    document.getElementById('r2c1').textContent = -a[1];
+    document.getElementById('r2c2').textContent = -b[1];
+    document.getElementById('r3c1').textContent = -a[2];
+    document.getElementById('r3c2').textContent = -b[2];
+    document.getElementById('r4c1').textContent = -a[3];
+    document.getElementById('r4c2').textContent = -b[3];
+    document.getElementById('r5c1').textContent = -a[4];
+    document.getElementById('r5c2').textContent = -b[4];
+  }
+  if(pg!==curr_pg)
+  {
+    if(pg==='a')
+    {
+      ge('r1').style.color = '#FF0080';
+      ge('r2').style.color = 'blue';
+      ge('r3').style.color = 'blue';
+      ge('r4').style.color = '#0000A0';
+      ge('r5').style.color = '#0000A0';
+      ge('r6').style.color = '#0000A0';
+      ge('r7').style.color = '#0000A0';
+    }
+    else
+    {
+      ge('r1').style.color = '#000';
+      ge('r2').style.color = '#000';
+      ge('r3').style.color = '#000';
+      ge('r4').style.color = '#000';
+      ge('r5').style.color = '#000';
+      ge('r6').style.color = '#000';
+      ge('r7').style.color = '#000';
+    }
+    curr_pg = pg;
+  }
 }
 
 window.onload = calculate;
 </script>
 </head>
 <body>
-  <input id="input" value="2" inputmode="none" readonly>
-  <div id="result">4</div>
-
+  <div id="result">
+    <table id="table">
+      <tr id="r1"><td id="r1c1"></td><td id="r1c2"></td></tr>
+      <tr id="r2"><td id="r2c1"></td><td id="r2c2"></td></tr>
+      <tr id="r3"><td id="r3c1"></td><td id="r3c2"></td></tr>
+      <tr id="r4"><td id="r4c1"></td><td id="r4c2"></td></tr>
+      <tr id="r5"><td id="r5c1"></td><td id="r5c2"></td></tr>
+      <tr id="r6"><td id="r6c1"></td><td id="r6c2"></td></tr>
+      <tr id="r7"><td id="r7c1"></td><td id="r7c2"></td></tr>
+    </table>
+  </div>
+  <input id="input" value="0" inputmode="none" readonly>
   <div class="keys">
-    <button onclick="press('1')">1</button>
-    <button onclick="press('2')">2</button>
-    <button onclick="press('3')">3</button>
-    <button onclick="press('4')">4</button>
-    <button onclick="press('5')">5</button>
-    <button onclick="press('6')">6</button>
     <button onclick="press('7')">7</button>
     <button onclick="press('8')">8</button>
     <button onclick="press('9')">9</button>
-    <button onclick="press('.')">.</button>
+    <button class="blue" onclick="press('C')">clr</button>
+
+    <button onclick="press('4')">4</button>
+    <button onclick="press('5')">5</button>
+    <button onclick="press('6')">6</button>
+    <button class="blue" onclick="press('a')">a</button>
+
+    <button onclick="press('1')">1</button>
+    <button onclick="press('2')">2</button>
+    <button onclick="press('3')">3</button>
+    <button class="blue" onclick="press('b')">b</button>
+
     <button onclick="press('0')">0</button>
-    <button onclick="press('-')">-</button>
-    <button onclick="press('C')">C</button>
-    <button onclick="press('<')">A</button>
-    <button onclick="press('>')">B</button>
-    <button onclick="press('B')">⌫</button>
+    <button class="gray" onclick="press('.')">.</button>
+    <button class="gray" onclick="press('-')">/-/</button>
+    <button class="blue" onclick="press('B')">вЊ«</button>
   </div>
 </body>
 </html>
